@@ -17,6 +17,10 @@
     # the function that actually does our shit
     #
     function kmeans(&$input, $k, $attribute = null){
+        if(empty($input)){
+            return array();
+        }
+
         #
         # if we're dealing with scalars, then just take them as is; otherwise,
         # extract just the values of interest
@@ -82,7 +86,8 @@
 
         foreach ($clusters as $cluster_index => $cluster){
             $cluster_values = array_values($cluster);
-            $mean = array_sum($cluster_values) / count($cluster_values);
+            $count = count($cluster_values);
+            $mean = $count ? array_sum($cluster_values) / $count : 0;
             if ($centroids[$cluster_index] != $mean){
                 $centroids[$cluster_index] = $mean;
             }
@@ -228,6 +233,34 @@
                 $this->assertEquals($expected[$key], $value);
             }
 
+        }
+
+        function test_kmeans_empty_set(){
+            $input = array();
+            $k = 5;
+            $clusters = kmeans($input, $k);
+            $this->assertEquals(array(), $clusters);
+        }
+
+        #
+        # test that centroids get calculated correctly (to 0) if there are empty
+        # clusters
+        #
+        function test_kmeans_recalculate_centroids_homogenous(){
+            $input = array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+            $k = 3;
+            $centroids = kmeans_initial_centroids($input, $k);
+            $clusters = array(array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1), array(), array());
+            $centroids = kmeans_recalculate_centroids($clusters, $centroids);
+            $expected = array(1, 0, 0);
+            $this->assertEquals($expected, $centroids);
+        }
+
+        function test_kmeans_homogenous(){
+            $input = array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+            $k = 3;
+            $clusters = kmeans($input, $k);
+            $this->assertEquals(1, count($clusters));
         }
 
         #
