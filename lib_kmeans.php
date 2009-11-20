@@ -65,7 +65,7 @@
         #
         # perhaps maintain state and keep track of how many iterations we've
         # been through vs how many changes are coming out of each successive iteration.
-        # wouldn't want an infinite regression or anything...
+        # wouldn't want an infinite recursion or anything...
         #
         if ($num_changes){   
             $centroids = kmeans_recalculate_centroids($clusters, $centroids);
