@@ -71,7 +71,7 @@
 		# been through vs how many changes are coming out of each successive iteration.
 		# wouldn't want an infinite recursion or anything...
 		#
-		if ($num_changes){   
+		if ($num_changes){
 			$centroids = kmeans_recalculate_centroids($clusters, $centroids);
 			kmeans_cluster($values, $cluster_map, $centroids);
 		}
